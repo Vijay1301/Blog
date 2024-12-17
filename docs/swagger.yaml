@@ -1,0 +1,59 @@
+definitions:
+  account.SignUp:
+    properties:
+      accountId:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      userId:
+        type: string
+    type: object
+  account.SignUpRes:
+    properties:
+      accessToken:
+        type: string
+      accountId:
+        type: string
+      refreshToken:
+        type: string
+      userId:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/account/signup:
+    post:
+      consumes:
+      - application/json
+      description: SignUp
+      parameters:
+      - description: SignUp Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/account.SignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.SignUpRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: SignUp
+      tags:
+      - Account
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
