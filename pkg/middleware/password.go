@@ -14,3 +14,9 @@ func CreatePasswordHash(password string) string {
 	}
 	return string(hash)
 }
+
+func VerifyPasswordHash(password, storedPasswordHash string) bool {
+
+	err := bcrypt.CompareHashAndPassword([]byte(storedPasswordHash), []byte(password))
+	return err == nil
+}

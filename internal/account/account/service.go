@@ -2,6 +2,7 @@ package account
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/blog/poc/pkg/middleware"
@@ -56,4 +57,36 @@ func (s *Service) Signup(ctx context.Context, req SignUp) (*SignUpRes, error) {
 		AccountId:    user.AccountId,
 	}, nil
 
+}
+
+func (s *Service) Login(ctx context.Context, req Login) (*LoginResponse, error) {
+
+	user, err := s.DAO.FindAccount(ctx, req.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	verify := middleware.VerifyPasswordHash(req.Password, user.Password)
+
+	if !verify {
+		return nil, fmt.Errorf("Invaild email or password", err)
+	}
+
+	payload := middleware.TokenPayload{
+		UserID:    user.UserId,
+		AccountID: user.AccountId,
+		Scopes:    []string{"all"},
+	}
+
+	accessToken, refreshToken, err := middleware.GenerateJWTTokens(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return &LoginResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		AccountId:    user.AccountId,
+		UserId:       user.UserId,
+	}, nil
 }

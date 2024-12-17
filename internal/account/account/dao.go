@@ -34,3 +34,24 @@ func (d *DAO) CreateAccount(ctx context.Context, user AccountDao) error {
 	}
 	return nil
 }
+
+func (d *DAO) FindAccount(ctx context.Context, email string) (*AccountDao, error) {
+	usersColl := d.db.Collection("accounts")
+	query := bson.M{
+		"email": email,
+	}
+	var user AccountDao
+	err := usersColl.FindOne(ctx, query).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, err
+		}
+
+		return nil, err
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	return &user, err
+}

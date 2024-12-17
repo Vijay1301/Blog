@@ -1,4 +1,22 @@
 definitions:
+  account.Login:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  account.LoginResponse:
+    properties:
+      accessToken:
+        type: string
+      accountId:
+        type: string
+      refreshToken:
+        type: string
+      userId:
+        type: string
+    type: object
   account.SignUp:
     properties:
       accountId:
@@ -24,6 +42,32 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/account/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: SignUp Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/account.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/account.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - Account
   /api/v1/account/signup:
     post:
       consumes:

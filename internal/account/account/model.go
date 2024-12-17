@@ -30,3 +30,10 @@ type SignUpRes struct {
 	AccountId    string `json:"accountId"`
 	UserId       string `json:"userId"`
 }
+
+type LoginResponse struct {
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+	AccountId    string `json:"accountId"`
+	UserId       string `json:"userId"`
+}
