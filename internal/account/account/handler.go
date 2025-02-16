@@ -16,7 +16,7 @@ func NewHandler(s *Service) *Handler {
 	}
 }
 
-func (h *Handler) MountRoutes(r fiber.Router) {
+func (h *Handler) Routes(r fiber.Router) {
 
 	r.Post("/signup", h.signup)
 	r.Post("/login", h.Login)

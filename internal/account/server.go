@@ -2,7 +2,6 @@ package account
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -37,12 +36,10 @@ func New(env string) *Server {
 }
 
 func (s *Server) Init(env string) error {
-
-	//Health Check Endpoint
-
 	filename := env + ".json"
+
 	configFile := filepath.Join(ConfigPath, filename)
-	fmt.Println(configFile)
+
 	configBytes, err := os.ReadFile(configFile)
 	if err != nil {
 		return err
@@ -76,11 +73,11 @@ func (s *Server) Init(env string) error {
 
 	apiV1 := s.server.Group("/api/v1")
 
-	authRouter := apiV1.Group("/account")
-	authDao := account.NewDAO(Db)
-	authService := account.NewService(authDao)
-	authHandler := account.NewHandler(authService)
-	authHandler.MountRoutes(authRouter)
+	accountRouter := apiV1.Group("/account")
+	accountDao := account.NewDAO(Db)
+	accountService := account.NewService(accountDao)
+	accountHandler := account.NewHandler(accountService)
+	accountHandler.Routes(accountRouter)
 
 	return nil
 }
