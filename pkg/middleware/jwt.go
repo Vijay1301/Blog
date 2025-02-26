@@ -10,9 +10,8 @@ import (
 )
 
 type TokenPayload struct {
-	UserID    string
-	AccountID string
-	Scopes    []string
+	Id     string
+	Scopes []string
 }
 
 func AuthMiddleware(c *fiber.Ctx) error {
@@ -21,6 +20,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	if tokenString == "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
 	}
+	
 	headerParts := strings.Split(tokenString, " ")
 	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
 		c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
@@ -46,15 +46,13 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 	}
 
-	accountID, _ := claims["AccountID"].(string)
+	accountID, _ := claims["Id"].(string)
 
-	userId, ok := claims["UserID"].(string)
-	if !ok || accountID == "" || userId == "" {
+	if !ok || accountID == "" {
 		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid Account"})
 	}
 
-	c.Locals("accountID", accountID)
-	c.Locals("userId", userId)
+	c.Locals("accountId", accountID)
 
 	return c.Next()
 }

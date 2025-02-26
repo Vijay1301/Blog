@@ -7,7 +7,8 @@ import (
 
 	_ "github.com/blog/poc/docs"
 	"github.com/blog/poc/internal/account/account"
-	"github.com/blog/poc/pkg/utils"
+	utils "github.com/blog/poc/pkg/utils"
+	mongo "github.com/blog/poc/pkg/utils/mongo"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
@@ -63,8 +64,7 @@ func (s *Server) Init(env string) error {
 
 	s.server.Get("/swagger/*", fiberSwagger.WrapHandler)
 
-	//initializing resources
-	databaseClient, err := utils.CreateNewConnection(Config.Database)
+	databaseClient, err := mongo.CreateNewConnection(Config.Database)
 	if err != nil {
 		return err
 	}

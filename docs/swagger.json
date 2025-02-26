@@ -4,6 +4,85 @@
         "contact": {}
     },
     "paths": {
+        "/api/v1/account": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get Account Details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "Get Account Details",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/account.Account"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/account/edit": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update Account Details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "Update Account Details",
+                "parameters": [
+                    {
+                        "description": "Update Request",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/account.UpdateAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/account/login": {
             "post": {
                 "description": "Login",
@@ -86,6 +165,71 @@
         }
     },
     "definitions": {
+        "account.Account": {
+            "type": "object",
+            "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "cover_image": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "follower_count": {
+                    "type": "integer"
+                },
+                "following_count": {
+                    "type": "integer"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "is_premium": {
+                    "type": "boolean"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "joined_at": {
+                    "type": "string"
+                },
+                "last_active": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "profile_image": {
+                    "type": "string"
+                },
+                "social_links": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
         "account.Login": {
             "type": "object",
             "properties": {
@@ -100,16 +244,13 @@
         "account.LoginResponse": {
             "type": "object",
             "properties": {
-                "accessToken": {
+                "access_Token": {
                     "type": "string"
                 },
-                "accountId": {
+                "id": {
                     "type": "string"
                 },
-                "refreshToken": {
-                    "type": "string"
-                },
-                "userId": {
+                "refresh_Token": {
                     "type": "string"
                 }
             }
@@ -117,16 +258,13 @@
         "account.SignUp": {
             "type": "object",
             "properties": {
-                "accountId": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
                 },
-                "password": {
+                "id": {
                     "type": "string"
                 },
-                "userId": {
+                "password": {
                     "type": "string"
                 }
             }
@@ -134,16 +272,48 @@
         "account.SignUpRes": {
             "type": "object",
             "properties": {
-                "accessToken": {
+                "access_Token": {
                     "type": "string"
                 },
-                "accountId": {
+                "id": {
                     "type": "string"
                 },
-                "refreshToken": {
+                "refresh_Token": {
+                    "type": "string"
+                }
+            }
+        },
+        "account.UpdateAccount": {
+            "type": "object",
+            "properties": {
+                "bio": {
                     "type": "string"
                 },
-                "userId": {
+                "cover_image": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "profile_image": {
+                    "type": "string"
+                },
+                "social_links": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "username": {
+                    "type": "string"
+                },
+                "website": {
                     "type": "string"
                 }
             }

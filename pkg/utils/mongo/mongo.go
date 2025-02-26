@@ -3,14 +3,18 @@ package utils
 import (
 	"context"
 
+	utils "github.com/blog/poc/pkg/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func CreateNewConnection(mongoConfig *Mongo) (*mongo.Client, error) {
+func CreateNewConnection(mongoConfig *utils.Mongo) (*mongo.Client, error) {
+
 	opts := options.Client()
+
 	opts.ApplyURI(mongoConfig.Url)
+
 	if !mongoConfig.SkipAuth {
 		creds := options.Credential{
 			Username: mongoConfig.User,

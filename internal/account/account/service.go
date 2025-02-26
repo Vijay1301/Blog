@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/blog/poc/pkg/middleware"
+	"github.com/blog/poc/pkg/utils"
 )
 
 type Service struct {
@@ -20,13 +21,19 @@ func NewService(dao *DAO) *Service {
 
 func (s *Service) Signup(ctx context.Context, req SignUp) (*SignUpRes, error) {
 
+	firstname, lastname := utils.ExtractNameFromEmail(req.Email)
+
+	fullname := fmt.Sprintf("%s %s", firstname, lastname)
+
 	user := AccountDao{
-		Email:     req.Email,
-		UserId:    req.UserId,
-		AccountId: req.AccountId,
-		Password:  middleware.CreatePasswordHash(req.Password),
-		CreatedAt: time.Now(),
-		CreatedBy: req.UserId,
+		Email:      req.Email,
+		Id:         req.Id,
+		FullName:   fullname,
+		Password:   middleware.CreatePasswordHash(req.Password),
+		CreatedAt:  time.Now(),
+		CreatedBy:  req.Id,
+		JoinedAt:   time.Now(),
+		IsVerified: true,
 	}
 
 	err := s.DAO.CreateAccount(ctx, user)
@@ -35,9 +42,8 @@ func (s *Service) Signup(ctx context.Context, req SignUp) (*SignUpRes, error) {
 	}
 
 	payload := middleware.TokenPayload{
-		UserID:    user.UserId,
-		AccountID: user.AccountId,
-		Scopes:    []string{"all"},
+		Id:     user.Id,
+		Scopes: []string{"all"},
 	}
 	// go func() {
 	// 	_, err = utils.SendMail(req.Email)
@@ -53,8 +59,7 @@ func (s *Service) Signup(ctx context.Context, req SignUp) (*SignUpRes, error) {
 	return &SignUpRes{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-		UserId:       user.UserId,
-		AccountId:    user.AccountId,
+		Id:           user.Id,
 	}, nil
 
 }
@@ -73,9 +78,8 @@ func (s *Service) Login(ctx context.Context, req Login) (*LoginResponse, error) 
 	}
 
 	payload := middleware.TokenPayload{
-		UserID:    user.UserId,
-		AccountID: user.AccountId,
-		Scopes:    []string{"all"},
+		Id:     user.Id,
+		Scopes: []string{"all"},
 	}
 
 	accessToken, refreshToken, err := middleware.GenerateJWTTokens(payload)
@@ -86,7 +90,57 @@ func (s *Service) Login(ctx context.Context, req Login) (*LoginResponse, error) 
 	return &LoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-		AccountId:    user.AccountId,
-		UserId:       user.UserId,
+		Id:           user.Id,
 	}, nil
+}
+
+func (s *Service) GetAccount(ctx context.Context, Id string) (*Account, error) {
+
+	data, err := s.DAO.GetAccountById(ctx, Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+
+}
+
+func (s *Service) UpdateAccount(ctx context.Context, Id string, req UpdateAccount) error {
+
+	data, err := s.DAO.GetAccountForUpdate(ctx, Id)
+	if err != nil {
+		return err
+	}
+
+	dto := AccountDao{
+		Id:             Id,
+		Email:          req.Email,
+		Username:       req.Username,
+		FullName:       req.FullName,
+		Password:       data.Password,
+		Bio:            req.Bio,
+		ProfileImage:   req.ProfileImage,
+		CoverImage:     req.CoverImage,
+		Website:        req.Website,
+		Location:       req.Location,
+		SocialLinks:    req.SocialLinks,
+		FollowerCount:  data.FollowerCount,
+		FollowingCount: data.FollowingCount,
+		JoinedAt:       data.JoinedAt,
+		IsVerified:     data.IsVerified,
+		IsPremium:      data.IsPremium,
+		LastActive:     data.LastActive,
+		CreatedAt:      data.CreatedAt,
+		CreatedBy:      data.CreatedBy,
+		UpdatedAt:      time.Now(),
+		UpdatedBy:      Id,
+	}
+
+	err = s.DAO.CreateAccount(ctx, dto)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }
