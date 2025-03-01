@@ -99,6 +99,75 @@ definitions:
       website:
         type: string
     type: object
+  post.BlogPost:
+    properties:
+      author:
+        $ref: '#/definitions/post.User'
+      author_id:
+        type: string
+      content:
+        items:
+          additionalProperties: true
+          type: object
+        type: array
+      cover_image:
+        type: string
+      id:
+        type: string
+      published_at:
+        type: string
+      read_time:
+        type: integer
+      status:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      visibility:
+        type: string
+    type: object
+  post.UpdateBlogPost:
+    properties:
+      author:
+        $ref: '#/definitions/post.User'
+      author_id:
+        type: string
+      content:
+        items:
+          additionalProperties: true
+          type: object
+        type: array
+      cover_image:
+        type: string
+      published_at:
+        type: string
+      read_time:
+        type: integer
+      status:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      visibility:
+        type: string
+    type: object
+  post.User:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      profile_image:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -203,6 +272,139 @@ paths:
       summary: SignUp
       tags:
       - Account
+  /api/v1/blog/post:
+    get:
+      consumes:
+      - application/json
+      description: Get All Post
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Get All Post
+      tags:
+      - Post
+    post:
+      consumes:
+      - application/json
+      description: Create Post
+      parameters:
+      - description: Create Post Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/post.BlogPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Create Post
+      tags:
+      - Post
+  /api/v1/blog/post/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Post
+      parameters:
+      - description: Post Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Delete Post
+      tags:
+      - Post
+    get:
+      consumes:
+      - application/json
+      description: Get Post By Id
+      parameters:
+      - description: Post Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Get Post By Id
+      tags:
+      - Post
+    put:
+      consumes:
+      - application/json
+      description: Update Post
+      parameters:
+      - description: Create Post Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/post.UpdateBlogPost'
+      - description: Post Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sucess
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Update Post
+      tags:
+      - Post
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.

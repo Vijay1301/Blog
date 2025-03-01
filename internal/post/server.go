@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	_ "github.com/blog/poc/docs"
-	"github.com/blog/poc/internal/account/account"
+	"github.com/blog/poc/internal/post/post"
 	utils "github.com/blog/poc/pkg/utils"
 	mongo "github.com/blog/poc/pkg/utils/mongo"
 	"github.com/gofiber/fiber/v2"
@@ -26,7 +26,7 @@ type Server struct {
 
 func New(env string) *Server {
 	fiberConfig := fiber.Config{
-		AppName: "account-service",
+		AppName: "Post-service",
 	}
 
 	return &Server{
@@ -74,11 +74,11 @@ func (s *Server) Init(env string) error {
 
 	apiV1 := s.server.Group("/api/v1")
 
-	accountRouter := apiV1.Group("/blog")
-	accountDao := account.NewDAO(Db)
-	accountService := account.NewService(accountDao)
-	accountHandler := account.NewHandler(accountService)
-	accountHandler.Routes(accountRouter)
+	postRouter := apiV1.Group("/blog")
+	postDao := post.NewDAO(Db)
+	postService := post.NewService(postDao)
+	postHandler := post.NewHandler(postService)
+	postHandler.Routes(postRouter)
 
 	return nil
 }
